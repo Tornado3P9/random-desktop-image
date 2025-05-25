@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -e
+
+# Get the username of the person who invoked sudo
+USER=$(logname)
+
+# Define the path to the config file
+CONFIG_DIR="/home/$USER/.config/random-desktop-image"
+CONFIG_FILE="$CONFIG_DIR/config.json"
+
+# Create the directory if it doesn't exist
+if [ ! -d "$CONFIG_DIR" ]; then
+    mkdir -p "$CONFIG_DIR" || { echo "Failed to create config directory"; exit 1; }
+    chown "$USER:$USER" "$CONFIG_DIR"
+fi
+
+# Create the config.json file if it doesn't exist
+if [ ! -f "$CONFIG_FILE" ]; then
+cat <<EOF > "$CONFIG_FILE"
+{
+    "save_path": "/home/$USER/image.jpg",
+    "width": 1920,
+    "height": 1080,
+    "local_background_folder": "/usr/share/xfce4/backdrops"
+}
+EOF
+chown "$USER:$USER" "$CONFIG_FILE"
+fi
+
+exit 0
